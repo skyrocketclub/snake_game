@@ -38,7 +38,7 @@ Renderer::~Renderer() {
   SDL_Quit();
 }
 
-void Renderer::Render(Snake const snake, SDL_Point const &food) {
+void Renderer::Render(Snake const snake, SDL_Point const &food, bool surpass, int score) {
   SDL_Rect block;
   block.w = screen_width / grid_width;
   block.h = screen_height / grid_height;
@@ -67,6 +67,16 @@ void Renderer::Render(Snake const snake, SDL_Point const &food) {
   if (snake.alive) {
     SDL_SetRenderDrawColor(sdl_renderer, 0x00, 0x7A, 0xCC, 0xFF);
   } else {
+    //Set the HighScore since the Snake has now died
+    //Did he pass the highscore???, If yes Render it
+
+    if(surpass == true){
+      showNewHighScore(score);
+    }   
+    else{
+       std::string title{"GAME OVER !!!"};
+  SDL_SetWindowTitle(sdl_window,title.c_str());
+    } 
     SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0x00, 0x00, 0xFF);
   }
   SDL_RenderFillRect(sdl_renderer, &block);
@@ -75,7 +85,13 @@ void Renderer::Render(Snake const snake, SDL_Point const &food) {
   SDL_RenderPresent(sdl_renderer);
 }
 
-void Renderer::UpdateWindowTitle(int score, int fps) {
-  std::string title{"Snake Score: " + std::to_string(score) + " FPS: " + std::to_string(fps)};
+void Renderer::UpdateWindowTitle(int score, int fps, int h_score) {
+  
+  std::string title{"Snake Score: " + std::to_string(score) + " FPS: " + std::to_string(fps) + " High Score: " + std::to_string(h_score)};
   SDL_SetWindowTitle(sdl_window, title.c_str());
+}
+
+void Renderer::showNewHighScore(int h_score){
+  std::string title{"NEW HIGH SCORE: "+ std::to_string(h_score)};
+  SDL_SetWindowTitle(sdl_window,title.c_str());
 }

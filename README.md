@@ -21,6 +21,9 @@ In this project, you can build your own C++ application or extend this Snake gam
 * gcc/g++ >= 5.4
   * Linux: gcc / g++ is installed by default on most Linux distros
   * Mac: same deal as make - [install Xcode command line tools](https://developer.apple.com/xcode/features/)
+  
+  
+  
   * Windows: recommend using [MinGW](http://www.mingw.org/)
 
 ## Basic Build Instructions
@@ -44,3 +47,7 @@ This work is licensed under a
 [cc-by-sa]: http://creativecommons.org/licenses/by-sa/4.0/
 [cc-by-sa-image]: https://licensebuttons.net/l/by-sa/4.0/88x31.png
 [cc-by-sa-shield]: https://img.shields.io/badge/License-CC%20BY--SA%204.0-lightgrey.svg
+
+
+  
+  

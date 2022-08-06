@@ -1,6 +1,7 @@
 #include "game.h"
 #include <iostream>
 #include "SDL.h"
+#include <fstream>
 
 Game::Game(std::size_t grid_width, std::size_t grid_height)
     : snake(grid_width, grid_height),
@@ -25,8 +26,9 @@ void Game::Run(Controller const &controller, Renderer &renderer,
     // Input, Update, Render - the main game loop.
     controller.HandleInput(running, snake);
     Update();
-    renderer.Render(snake, food);
-
+    //add two arguments bool surpass & int score
+    //surpass indicates if you pass the highscore & score is now your new score...
+    renderer.Render(snake, food,surpass, score);
     frame_end = SDL_GetTicks();
 
     // Keep track of how long each loop through the input/update/render cycle
@@ -36,7 +38,8 @@ void Game::Run(Controller const &controller, Renderer &renderer,
 
     // After every second, update the window title.
     if (frame_end - title_timestamp >= 1000) {
-      renderer.UpdateWindowTitle(score, frame_count);
+      h_score = GetH_Score();
+      renderer.UpdateWindowTitle(score, frame_count,h_score);
       frame_count = 0;
       title_timestamp = frame_end;
     }
@@ -48,6 +51,7 @@ void Game::Run(Controller const &controller, Renderer &renderer,
       SDL_Delay(target_frame_duration - frame_duration);
     }
   }
+
 }
 
 void Game::PlaceFood() {
@@ -66,7 +70,11 @@ void Game::PlaceFood() {
 }
 
 void Game::Update() {
-  if (!snake.alive) return;
+  if (!snake.alive){
+    //check if he beat the highscore, if yes, surpass = true
+    checkHighScore(score);
+    return;
+  }
 
   snake.Update();
 
@@ -79,9 +87,61 @@ void Game::Update() {
     PlaceFood();
     // Grow snake and increase speed.
     snake.GrowBody();
-    snake.speed += 0.02;
+    snake.speed += 0.01;
   }
 }
 
 int Game::GetScore() const { return score; }
 int Game::GetSize() const { return snake.size; }
+int Game::GetH_Score() {
+  std::ifstream in_file;
+  in_file.open("highscore.txt");
+  if(!in_file){
+    std::cout<<"No Current Highscore\n";
+
+    //meaning the file is not yet in existence
+    std::ofstream out_file;
+    out_file.open("highscore.txt",std::ios::out);
+    out_file<<0;
+    h_score = 0;
+    out_file.close();
+  }
+  else{
+    in_file>>h_score;
+    in_file.close();
+  }
+  return h_score;
+}
+
+void Game::checkHighScore(int score){
+  int c_highscore{};
+  std::ifstream in_file;
+  in_file.open("highscore.txt");
+
+    if(!in_file){
+    std::cout<<"Unable to fetch current high score...\n";
+    }
+    else{
+      in_file>>c_highscore;
+      if(score>c_highscore){
+        //call function to update the new highscore...
+        in_file.close();
+        surpass = true;
+        updateHighScore(score); 
+        return;
+      }
+      else{
+          // std::cout<<"Unable to beat High score, try again!\n";
+      }
+    }
+
+  in_file.close();
+}
+
+void Game::updateHighScore(int score){
+ //record the new score ...
+  std::ofstream out_file;
+  out_file.open("highscore.txt",std::ios::out);
+  out_file<<score;
+  out_file.close();
+}

@@ -14,6 +14,9 @@ class Game {
            std::size_t target_frame_duration);
   int GetScore() const;
   int GetSize() const;
+  int GetH_Score();
+  
+  
 
  private:
   Snake snake;
@@ -25,9 +28,13 @@ class Game {
   std::uniform_int_distribution<int> random_h;
 
   int score{0};
+  int h_score{};
+  bool surpass{false};
 
   void PlaceFood();
   void Update();
+  void checkHighScore(int);
+  void updateHighScore(int);
 };
 
 #endif

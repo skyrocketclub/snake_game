@@ -11,8 +11,9 @@ class Renderer {
            const std::size_t grid_width, const std::size_t grid_height);
   ~Renderer();
 
-  void Render(Snake const snake, SDL_Point const &food);
-  void UpdateWindowTitle(int score, int fps);
+  void Render(Snake const snake, SDL_Point const &food, bool surpass, int h_score);
+  void UpdateWindowTitle(int score, int fps, int h_score);
+  void showNewHighScore(int h_score);
 
  private:
   SDL_Window *sdl_window;
